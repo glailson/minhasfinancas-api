@@ -5,8 +5,9 @@ public class AplicacaoUtil {
 	public static boolean validarString(String string) {
 		if (string == null || string.trim().equals("")) {
 			return false;
-		} 
-		return true;
+		} else {
+			return true;
+		}
 	}
 
 }

@@ -17,13 +17,17 @@ import javax.persistence.TemporalType;
 import com.leoncio.minhasfinancas.model.enums.StatusLancamento;
 import com.leoncio.minhasfinancas.model.enums.TipoLancamento;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "lancamento", schema = "financas")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lancamento {
 
 	@Id

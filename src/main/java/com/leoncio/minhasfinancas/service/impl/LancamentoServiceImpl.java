@@ -3,6 +3,7 @@ package com.leoncio.minhasfinancas.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -14,6 +15,7 @@ import com.leoncio.minhasfinancas.api.resource.AplicacaoUtil;
 import com.leoncio.minhasfinancas.exception.RegraNegocioException;
 import com.leoncio.minhasfinancas.model.entity.Lancamento;
 import com.leoncio.minhasfinancas.model.enums.StatusLancamento;
+import com.leoncio.minhasfinancas.model.enums.TipoLancamento;
 import com.leoncio.minhasfinancas.model.repository.LancamentoRepository;
 import com.leoncio.minhasfinancas.service.LancamentoService;
 
@@ -70,8 +72,8 @@ public class LancamentoServiceImpl implements LancamentoService{
 
 	@Override
 	public void validar(Lancamento lancamento) {
-		
-		if (AplicacaoUtil.validarString(lancamento.getDescricao()) ) {
+		System.out.println(lancamento.getDescricao());
+		if (!AplicacaoUtil.validarString(lancamento.getDescricao()) ) {
 			throw new RegraNegocioException("Informe uma Descrição válida.");
 		}
 		if (lancamento.getMes() == null || lancamento.getMes() < 1 || lancamento.getMes() > 12 ) {
@@ -89,7 +91,27 @@ public class LancamentoServiceImpl implements LancamentoService{
 		if (lancamento.getTipo() == null) {
 			throw new RegraNegocioException("Informe um Tipo de Lançamento.");
 		}
+	}
+
+	@Override
+	public Optional<Lancamento> obterPorId(Long id) {
+		// TODO Auto-generated method stub
+		return repository.findById(id);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public BigDecimal obterSaldoPorUsuario(Long id) {
+		BigDecimal receitas = repository.obterSaldoTipoLancamentoEUsuario(id, TipoLancamento.RECEITA);
+		BigDecimal despesas = repository.obterSaldoTipoLancamentoEUsuario(id, TipoLancamento.DESPESA);
 		
+		if (receitas == null ) {
+			receitas = BigDecimal.ZERO;
+		}
+		if (despesas == null ) {
+			despesas = BigDecimal.ZERO;
+		}
+		return receitas.subtract(despesas);
 	}
 
 }
